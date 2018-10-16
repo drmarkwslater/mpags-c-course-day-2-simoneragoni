@@ -3,9 +3,9 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include "processCommandLine.hpp"
-#include "TransformChar.cpp"
-
+#include "MPAGSCipher/processCommandLine.cpp"
+#include "MPAGSCipher/TransformChar.cpp"
+#include "MPAGSCipher/runCaesarCipher.cpp"
 
 // For std::isalpha and std::isupper
 #include <cctype>
@@ -90,6 +90,7 @@ if(helping == 1) return 1;
 				inputText += std::toupper(inputChar);
 				continue;
 		        	}
+			inputText += transformChar(inputChar);    
 	   		}
 		}
 	else{
@@ -101,6 +102,7 @@ if(helping == 1) return 1;
 		    		inputText += std::toupper(inputChar);
 		    		continue;
 		    	}
+		    inputText += transformChar(inputChar);    
 		   }
   		}
    }
@@ -114,22 +116,31 @@ if(helping == 1) return 1;
 		    		inputText += std::toupper(inputChar);
 		    		continue;
 		    }
-	 }
+		inputText += transformChar(inputChar);    
+		  }
 
 
-    inputText += transformChar(inputChar);                                   //modified
+    //inputText += transformChar(inputChar);                                   //modified
 
     // If the character isn't alphabetic or numeric, DONT add it.
     // Our ciphers can only operate on alphabetic characters.
   }
+
+
+  std::cout << "Please input Caesar's key. Later decide if you want to encrypt or decrypt" << std::endl;
+  int key;
+  std::cin >> key;
+  std::string exitText = runCaesarCipher(inputText, key); 
+
+
 
   // Output the transliterated text
   // Warn that output file option not yet implemented
   if (!outputFile.empty()) {
 	std::ofstream out_file{outputFile};
 	bool ok_to_write = out_file.good();
-	if(ok_to_write == 1)	out_file << inputText << std::endl;
-	else {std::cout << inputText << std::endl;}
+	if(ok_to_write == 1)	out_file << exitText << std::endl;
+	else {std::cout << exitText << std::endl;}
   }
 
 /*  if (!outputFile.empty()) {
@@ -138,7 +149,7 @@ if(helping == 1) return 1;
               << "') not implemented yet, using stdout\n";
   }*/
 
-  else {std::cout << inputText << std::endl;}
+  else {std::cout << exitText << std::endl;}
 
   // No requirement to return from main, but we do so for clarity
   // and for consistency with other functions
