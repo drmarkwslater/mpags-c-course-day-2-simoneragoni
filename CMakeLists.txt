@@ -8,7 +8,9 @@ add_executable(mpags-cypher
 		MPAGSCipher/TransformChar.cpp
 		MPAGSCipher/TransformChar.hpp
 		MPAGSCipher/processCommandLine.cpp
-		MPAGSCipher/processCommandLine.hpp)
+		MPAGSCipher/processCommandLine.hpp
+		MPAGSCipher/runCaesarCipher.cpp
+		MPAGSCipher/runCaesarCipher.hpp)
 set(CMAKE_CXX_EXTENSION OFF)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -Wfatal-errors -Wshadow -pedantic") 
 target_include_directories(mpags-cypher PRIVATE MPAGSCipher)
