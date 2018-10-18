@@ -14,6 +14,15 @@ typedef std::vector<std::string>::size_type size_type;
 //translating function: gives inputs to "inputText"
 std::string transformChar( const char in_char ){
     // Transliterate digits to English words
+
+  std::string out_text{""};
+
+  // Uppercase alphabetic characters
+  if (std::isalpha(in_char)) {
+    out_text += std::toupper(in_char);
+    return out_text;
+  }
+
     switch (in_char) {
       case '0':
 	return "ZERO";
@@ -46,7 +55,7 @@ std::string transformChar( const char in_char ){
 	return "NINE";
 	break;
 			}
-return "SPACE";
+return "";
 }
 
 

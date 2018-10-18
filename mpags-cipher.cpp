@@ -3,25 +3,15 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include "MPAGSCipher/processCommandLine.cpp"
-#include "MPAGSCipher/TransformChar.cpp"
-#include "MPAGSCipher/runCaesarCipher.cpp"
+#include "MPAGSCipher/processCommandLine.hpp"
+#include "MPAGSCipher/TransformChar.hpp"
+#include "MPAGSCipher/runCaesarCipher.hpp"
 
 // For std::isalpha and std::isupper
 #include <cctype>
 
 // Add a typedef that assigns another name for the given type for clarity
 typedef std::vector<std::string>::size_type size_type;
-
-//std::string transformChar( const char in_char );
-
-/*bool processCommandLine(const std::vector<std::string>& args,
-			bool& helpRequested,
-			bool& versionRequested,
-			std::string& inputFileName,
-			std::string& outputFileName);
-*/
-
 
 // Main function of the mpags-cipher program
 int main(int argc, char* argv[])
@@ -35,9 +25,11 @@ int main(int argc, char* argv[])
   std::string inputFile {""};
   std::string outputFile {""};
 
-int helping;
-helping = processCommandLine(cmdLineArgs, helpRequested, versionRequested, inputFile, outputFile);
-if(helping == 1) return 1;
+  if (!processCommandLine(cmdLineArgs, helpRequested, versionRequested, inputFile, outputFile))
+    {
+      std::cout << "Problem processing command line." << std::endl;
+      return 1;
+    }
 
   // Handle help, if requested
   if (helpRequested) {
@@ -71,37 +63,19 @@ if(helping == 1) return 1;
 
   // Read in user input from stdin/file
   // Warn that input file option not yet implemented
-/*  if (!inputFile.empty()) {
-    std::cout << "[warning] input from file ('"
-              << inputFile
-              << "') not implemented yet, using stdin\n";
-  }*/
   if (!inputFile.empty()) 
   {
     std::ifstream in_file{inputFile};
-    bool ok_to_read = in_file.good();
-	if(ok_to_read == 1)
+    if(in_file.good())
 		{
 		while(in_file >> inputChar)
 	  		{
-	    		// Uppercase alphabetic characters
-	    		if (std::isalpha(inputChar)) 
-				{
-				inputText += std::toupper(inputChar);
-				continue;
-		        	}
 			inputText += transformChar(inputChar);    
 	   		}
 		}
 	else{
 		while(std::cin >> inputChar)
 		  {
-		    // Uppercase alphabetic characters
-		    if (std::isalpha(inputChar)) 
-			{
-		    		inputText += std::toupper(inputChar);
-		    		continue;
-		    	}
 		    inputText += transformChar(inputChar);    
 		   }
   		}
@@ -111,26 +85,20 @@ if(helping == 1) return 1;
   else  {
 		while(std::cin >> inputChar)
 		  {
-		    // Uppercase alphabetic characters
-		    if (std::isalpha(inputChar)) {
-		    		inputText += std::toupper(inputChar);
-		    		continue;
-		    }
 		inputText += transformChar(inputChar);    
 		  }
 
-
-    //inputText += transformChar(inputChar);                                   //modified
 
     // If the character isn't alphabetic or numeric, DONT add it.
     // Our ciphers can only operate on alphabetic characters.
   }
 
 
+  // should be done as a command line argument
   std::cout << "Please input Caesar's key. Later decide if you want to encrypt or decrypt" << std::endl;
   int key;
   std::cin >> key;
-  std::string exitText = runCaesarCipher(inputText, key); 
+  std::string exitText = runCaesarCipher(inputText, key, true); 
 
 
 
@@ -138,17 +106,9 @@ if(helping == 1) return 1;
   // Warn that output file option not yet implemented
   if (!outputFile.empty()) {
 	std::ofstream out_file{outputFile};
-	bool ok_to_write = out_file.good();
-	if(ok_to_write == 1)	out_file << exitText << std::endl;
+	if(out_file.good())	out_file << exitText << std::endl;
 	else {std::cout << exitText << std::endl;}
   }
-
-/*  if (!outputFile.empty()) {
-    std::cout << "[warning] output to file ('"
-              << outputFile
-              << "') not implemented yet, using stdout\n";
-  }*/
-
   else {std::cout << exitText << std::endl;}
 
   // No requirement to return from main, but we do so for clarity
